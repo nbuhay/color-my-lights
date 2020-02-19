@@ -1,0 +1,14 @@
+{
+  "name": "music_player_auth_svc",
+  "version": "0.0.0",
+  "description": "Handle user authentication for integrated music provider services.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nbuhay@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
