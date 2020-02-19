@@ -1,0 +1,5 @@
+# Vagrant
+.vagrant
+
+# Visual Studio Code
+*.code-workspace
