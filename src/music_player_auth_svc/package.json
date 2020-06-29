@@ -4,11 +4,20 @@
   "description": "Handle user authentication for integrated music provider services.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon -L",
+    "test": "mocha --recursive"
   },
   "author": "nbuhay@gmail.com",
   "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.705.0",
+    "express": "^4.17.1"
+  },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "chai": "^4.2.0",
+    "expect.js": "^0.3.1",
+    "mocha": "^8.0.1",
+    "nock": "^12.0.3",
+    "sinon": "^9.0.2"
   }
 }

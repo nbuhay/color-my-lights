@@ -1,0 +1,11 @@
+{
+  "url": "http://localhost",
+  "port": 8080 ,
+  "music_stream_provider": {
+    "spotify": {
+      "host": "accounts.spotify.com",
+      "client_id": "some_fake_client_id",
+      "secret_id": "some_fake_secret_id"
+    }
+  }
+}
