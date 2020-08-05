@@ -1,10 +1,11 @@
 const config = require('config');
-const https = require('https')
+const https = require('https');
+const querystring = require('querystring');
 const MusicStreamAuthSvc = require('./MusicStreamAuthSvc');
 
 class SpotifyAuthSvc extends MusicStreamAuthSvc {
   
-  static authorize_code_flow (user_auth_code) {
+  static auth_code_flow_req_tokens (user_auth_code) {
     return new Promise((resolve, reject) => {
 
       let redirect_uri = 
@@ -18,7 +19,6 @@ class SpotifyAuthSvc extends MusicStreamAuthSvc {
       let post_data = JSON.stringify({
         'grant_type': 'authorization_code',
         'code': user_auth_code,
-        'scope': SpotifyAuthSvc.generate_oauth_state(),
         'redirect_uri': redirect_uri
       });
 
@@ -36,17 +36,54 @@ class SpotifyAuthSvc extends MusicStreamAuthSvc {
       let req = https.request(options, (res) => {
         let chunks = [];
         res
-        .on('data', (chunk) => chunks.push(chunk))
-        .on('end',  () => {
-            resolve(Buffer.concat(chunks).toString())
-          })
-          .on('error', (error) => reject(`requestAuthPayload: ${error}`));
-
-      });
+          .on('data', (chunk) => chunks.push(chunk))
+          .on('end',  () => {
+              resolve(Buffer.concat(chunks).toString());
+            })
+          .on('error', (e) => reject(`response: ${e}`));
+        });
 
       req.write(post_data);
       req.end();
     });
+  }
+
+  static auth_code_flow_req_authz() {
+    const req_oauth_state = SpotifyAuthSvc.generate_oauth_state();
+
+    return new Promise((resolve, reject) => {
+      let redirect_uri = 
+        `${config.get('url')}:${config.get('port')}` +
+          `/auth/provider/callback/`;
+
+      let query_params =  {
+        client_id: config.get('music_stream_provider.spotify.client_id'),
+        response_type: 'code',
+        redirect_uri: redirect_uri,
+        state: req_oauth_state,
+        scope: config.get('music_stream_provider.spotify.scope'),
+        show_dialog: false
+      };
+
+      let options = {
+        method: 'GET',
+        hostname: config.get('music_stream_provider.spotify.host'),
+        path: `/authorize?${querystring.stringify(query_params)}`
+      };
+
+      let req = https.request(options, (res) => {
+        let chunks = [];
+        res
+          .on('error', (e) => reject(`response: ${e}`))
+          .on('data', (chunk) => chunks.push(chunk))
+          .on('end', () => {
+            resolve(Buffer.concat(chunks).toString())
+          });
+      });
+
+      req.on('error', (e) => reject(`request: ${e}`));
+      req.end();
+    }).catch((err) => { return err; });
   }
 
 }

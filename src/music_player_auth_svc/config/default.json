@@ -5,7 +5,10 @@
     "spotify": {
       "host": "accounts.spotify.com",
       "client_id": "some_fake_client_id",
-      "secret_id": "some_fake_secret_id"
+      "secret_id": "some_fake_secret_id",
+      "scope": [
+        "user-read-currently-playing"
+      ]
     }
   }
 }
